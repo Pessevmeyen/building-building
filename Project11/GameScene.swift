@@ -16,6 +16,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             scoreLabel.text = "Score: \(score)"
         }
     }
+
+    let cameraNode = SKCameraNode()
     
     
     var editLabel: SKLabelNode! // We're going to let you place obstacles between the top of the scene and the slots at the bottom, so that players have to position their balls exactly correctly to bounce off things in the right ways.
@@ -65,10 +67,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         makeBouncer(at: CGPoint(x: 768, y: 0))
         makeBouncer(at: CGPoint(x: 1024, y: 0))
         
+        self.camera = cameraNode
+        self.addChild(cameraNode)
         
+        dropObjects()
         
-        
-        
+    }
+
+    func dropObjects() {
+        // Cisimleri oluşturun ve ekranın üstünden bırakın
+        let object = SKSpriteNode(color: .red, size: CGSize(width: 50, height: 50))
+        object.physicsBody = SKPhysicsBody(rectangleOf: object.size)
+        object.position = CGPoint(x: size.width / 2, y: size.height + object.size.height)
+        addChild(object)
+
+        // Cisimlere yerçekimi uygulayın
+        object.physicsBody?.affectedByGravity = true
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) { // We haven't used touchesBegan() before, so the first two lines needs to be explained. This method gets called (in UIKit and SpriteKit) whenever someone starts touching their device. It's possible they started touching with multiple fingers at the same time, so we get passed a new data type called Set. This is just like an array, except each object can appear only once.
@@ -105,7 +119,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
         }
         
-        
+        func update(_ currentTime: TimeInterval) {
+            // Kamera ekranın yukarı doğru kaymasını takip ediyor
+            cameraNode.position.y += 1.0
+        }
         
         
         
